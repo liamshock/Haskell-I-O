@@ -1,0 +1,36 @@
+
+{- Don't try to run this file, its just for guidlines -}
+{- This is everything you will need to do I/O in haskell -}
+
+import System.IO
+import Data.List
+import System.Directory
+import Control.Monad
+import Data.Ord
+import Data.Function
+
+-- useful stuff to import (some or all)
+
+
+convert :: String -> [[Double]]
+convert x = map (map read . words) $ lines x  
+-- This reads a text file (tab delineated) and makes a list of lists
+
+
+outputFormat :: Show a => [[a]] -> [[Char]]
+outputFormat listOlists = zipWith3 (\x y z -> show x ++ "\t\t" ++ show y ++ "\t\t" ++ show z) (map head listOlists) (map head (map tail listOlists)) (map last listOlists) ++ [""]
+-- This function takes a list of lists and creates a list of strings which can be mapped over 
+-- by PutStrLn to output columns of data (watch the new line at the end). 
+-- Also this is for a list of lists where the sublists have 3 elements.
+-- Using a bigger zipWith for more elements in the sublists
+
+
+-- Below is a sketch of a program
+
+main = do content <- readFile "text.dat" -- how to read in a text file
+          let results = convert content -- how to get the data from the text file in the format of a list of lists
+          let finalResults = ... -- here you operate on the list
+          let formattedFinalResults = outputFormat finalResults -- change the final results (a list of lists) into a form ready to be outputted (as done below)
+          handle <- openFile "narf_fixed.dat" WriteMode -- open a file to write to
+          mapM_ (hPutStrLn handle) formattedFinalResults -- write the final results to the text file
+          hClose handle -- close the handle
